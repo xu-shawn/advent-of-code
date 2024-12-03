@@ -69,15 +69,15 @@ int evaluate_string(const std::string& data) {
 
     static const std::regex mul_regex{R"regex(mul\((\d+),(\d+)\))regex"};
 
-    int ans = 0;
+    int total = 0;
 
     const std::sregex_iterator match_begin{cbegin(data), cend(data), mul_regex};
     const std::sregex_iterator match_end{};
 
     for (auto curr_match = match_begin; curr_match != match_end; ++curr_match)
-        ans += evaluate_instruction(*curr_match);
+        total += evaluate_instruction(*curr_match);
 
-    return ans;
+    return total;
 }
 
 int evaluate_instruction(const std::smatch& instruction) {
