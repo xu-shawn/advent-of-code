@@ -54,9 +54,8 @@ void solve_q2(const Data& data) {
 
     int ans = 0;
 
-    const auto match_begin =
-      std::sregex_iterator(cbegin(data.data), cend(data.data), enabling_regex);
-    const auto match_end = std::sregex_iterator();
+    const std::sregex_iterator match_begin{cbegin(data.data), cend(data.data), enabling_regex};
+    const std::sregex_iterator match_end{};
 
     for (auto curr_match = match_begin; curr_match != match_end; ++curr_match)
         ans += evaluate_string(curr_match->str());
@@ -72,10 +71,10 @@ int evaluate_string(const std::string& data) {
 
     int ans = 0;
 
-    const auto match_begin = std::sregex_iterator(cbegin(data), cend(data), mul_regex);
-    const auto match_end   = std::sregex_iterator();
+    const std::sregex_iterator match_begin{cbegin(data), cend(data), mul_regex};
+    const std::sregex_iterator match_end{};
 
-    for (std::sregex_iterator curr_match = match_begin; curr_match != match_end; ++curr_match)
+    for (auto curr_match = match_begin; curr_match != match_end; ++curr_match)
         ans += evaluate_instruction(*curr_match);
 
     return ans;
