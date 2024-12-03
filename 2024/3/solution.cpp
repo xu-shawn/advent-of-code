@@ -4,13 +4,14 @@
 #include <regex>
 #include <sstream>
 #include <string>
+#include <utility>
 
 struct Data;
 
 Data parse_from(std::fstream&&);
 void solve(Data&&);
-void solve_q1(Data&);
-void solve_q2(Data&);
+void solve_q1(const Data&);
+void solve_q2(const Data&);
 int  evaluate_string(const std::string&);
 int  evaluate_instruction(const std::smatch&);
 
@@ -43,9 +44,9 @@ void solve(Data&& data) {
     solve_q2(data);
 }
 
-void solve_q1(Data& data) { std::cout << evaluate_string(data.data) << std::endl; }
+void solve_q1(const Data& data) { std::cout << evaluate_string(data.data) << std::endl; }
 
-void solve_q2(Data& data) {
+void solve_q2(const Data& data) {
     using std::cbegin;
     using std::cend;
 
