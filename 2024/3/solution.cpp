@@ -1,12 +1,9 @@
-#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <regex>
 #include <sstream>
-#include <iterator>
-#include <numeric>
-#include <valarray>
-#include <vector>
+#include <string>
 
 struct Data;
 
