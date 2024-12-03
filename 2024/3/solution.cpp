@@ -50,7 +50,7 @@ void solve_q2(const Data& data) {
     using std::cbegin;
     using std::cend;
 
-    static const std::regex enabling_regex(R"regex(do\(\).+?don't\(\))regex");
+    static const std::regex enabling_regex{R"regex(do\(\).+?don't\(\))regex"};
 
     int ans = 0;
 
@@ -67,7 +67,7 @@ int evaluate_string(const std::string& data) {
     using std::cbegin;
     using std::cend;
 
-    static const std::regex mul_regex(R"regex(mul\((\d+),(\d+)\))regex");
+    static const std::regex mul_regex{R"regex(mul\((\d+),(\d+)\))regex"};
 
     int ans = 0;
 
@@ -84,4 +84,4 @@ int evaluate_instruction(const std::smatch& instruction) {
     return std::stoi(instruction[1]) * std::stoi(instruction[2]);
 }
 
-int main() { solve(parse_from(std::fstream("data.txt"))); }
+int main() { solve(parse_from(std::fstream{"data.txt"})); }
