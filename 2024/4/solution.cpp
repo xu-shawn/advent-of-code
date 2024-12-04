@@ -2,14 +2,13 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <regex>
-#include <sstream>
 #include <string>
 #include <utility>
+#include <vector>
 
 struct Data;
-struct Position;
 struct Direction;
+struct Position;
 
 Data parse_from(std::fstream&&);
 void solve(Data&&);
