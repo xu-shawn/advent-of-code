@@ -18,8 +18,10 @@ int  search_all_matches(const std::vector<std::string>&, const std::string&, con
 bool cross_xmas_match(const std::vector<std::string>&, const Position);
 bool match_success(const std::vector<std::string>&, const std::string&, Position, const Direction);
 
-constexpr Position operator+(const Position, const Direction) noexcept;
-Position&          operator+=(Position&, const Direction) noexcept;
+constexpr Position  operator+(const Position, const Direction) noexcept;
+constexpr Position& operator+=(Position&, const Direction) noexcept;
+
+constexpr Direction operator+(const Direction, const Direction) noexcept;
 
 struct Direction {
     const int x;
@@ -30,7 +32,7 @@ struct Direction {
         y(b) {}
 };
 
-constexpr Direction operator+(const Direction& first, const Direction& second) {
+constexpr Direction operator+(const Direction first, const Direction second) noexcept {
     return Direction(first.x + second.x, first.y + second.y);
 }
 
@@ -55,7 +57,7 @@ constexpr Position operator+(const Position pos, const Direction direction) noex
     return Position{pos.x + direction.x, pos.y + direction.y};
 }
 
-Position& operator+=(Position& pos, const Direction direction) noexcept {
+constexpr Position& operator+=(Position& pos, const Direction direction) noexcept {
     pos.x += direction.x;
     pos.y += direction.y;
     return pos;
