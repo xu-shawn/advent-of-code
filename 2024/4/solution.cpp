@@ -99,7 +99,7 @@ void solve_q1(const Data& data) {
 
     for (int x = 0; x < size(data.data); x++)
         for (int y = 0; y < size(data.data[0]); y++)
-            ans += search_all_matches(data, "XMAS", std::make_pair(x, y));
+            ans += search_all_matches(data, "XMAS", Position{x, y});
 
     std::cout << ans << std::endl;
 }
@@ -111,45 +111,41 @@ void solve_q2(const Data& data) {
 
     for (int x = 1; x + 1 < size(data.data); x++)
         for (int y = 1; y + 1 < size(data.data[0]); y++)
-            ans += cross_xmas_match(data, std::make_pair(x, y));
+            ans += cross_xmas_match(data, Position{x, y});
 
     std::cout << ans << std::endl;
 }
 
-int search_all_matches(const Data&               data,
-                       const std::string&        to_search,
-                       const std::pair<int, int> position) {
+int search_all_matches(const Data& data, const std::string& to_search, const Position position) {
     using std::size;
 
     const std::vector<std::string>& map = data.data;
 
     int ans = 0;
 
-    for (const auto& curr_direction : directions)
+    for (const auto& curr_direction : ALL_DIRECTIONS)
         ans += match_success(map, to_search, position, curr_direction);
 
     return ans;
 }
 
-bool cross_xmas_match(const Data& data, const Position& position) {
+bool cross_xmas_match(const Data& data, const Position position) {
     const auto& [x, y]                  = position;
     const std::vector<std::string>& map = data.data;
 
     if (x < 1 || y < 1 || x + 1 >= size(map) || y + 1 >= size(map.at(0)))
         return false;
 
-    return (match_success(data.data, "MAS", std::make_pair(x + 1, y + 1), std::make_pair(-1, -1))
-            || match_success(data.data, "SAM", std::make_pair(x + 1, y + 1),
-                             std::make_pair(-1, -1)))
-        && (match_success(data.data, "MAS", std::make_pair(x - 1, y + 1), std::make_pair(1, -1))
-            || match_success(data.data, "SAM", std::make_pair(x - 1, y + 1),
-                             std::make_pair(1, -1)));
+    return (match_success(data.data, "MAS", Position{x + 1, y + 1}, SW)
+            || match_success(data.data, "SAM", Position{x + 1, y + 1}, SW))
+        && (match_success(data.data, "MAS", Position{x - 1, y + 1}, NW)
+            || match_success(data.data, "SAM", Position{x - 1, y + 1}, NW));
 }
 
 bool match_success(const std::vector<std::string>& map,
                    const std::string&              to_search,
-                   const std::pair<int, int>       position,
-                   const std::pair<int, int>       direction) {
+                   const Position                  position,
+                   const Direction                 direction) {
     using std::size;
 
     auto [x, y]                            = position;
