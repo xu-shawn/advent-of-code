@@ -34,8 +34,8 @@ struct Direction {
         y(b) {}
 };
 
-constexpr Direction operator+(const Direction& dir, const Direction& other) {
-    return Direction(dir.x + other.x, dir.x + other.y);
+constexpr Direction operator+(const Direction& first, const Direction& second) {
+    return Direction(first.x + second.x, first.x + second.y);
 }
 
 constexpr Direction N{1, 0};
@@ -55,14 +55,14 @@ struct Position {
     int y;
 };
 
-constexpr Position operator+(const Position& lhs, const Direction& direction) noexcept {
-    return Position{lhs.x + direction.x, lhs.y + direction.y};
+constexpr Position operator+(const Position& pos, const Direction& direction) noexcept {
+    return Position{pos.x + direction.x, pos.y + direction.y};
 }
 
-Position& operator+=(Position& lhs, const Direction& direction) noexcept {
-    lhs.x += direction.x;
-    lhs.y += direction.y;
-    return lhs;
+Position& operator+=(Position& pos, const Direction& direction) noexcept {
+    pos.x += direction.x;
+    pos.y += direction.y;
+    return pos;
 }
 
 struct Data {
@@ -123,14 +123,14 @@ int search_all_matches(const Data& data, const std::string& to_search, const Pos
 
     int ans = 0;
 
-    for (const auto& curr_direction : ALL_DIRECTIONS)
+    for (const auto curr_direction : ALL_DIRECTIONS)
         ans += match_success(map, to_search, position, curr_direction);
 
     return ans;
 }
 
 bool cross_xmas_match(const Data& data, const Position position) {
-    const auto& [x, y]                  = position;
+    const auto [x, y]                   = position;
     const std::vector<std::string>& map = data.data;
 
     if (x < 1 || y < 1 || x + 1 >= size(map) || y + 1 >= size(map.at(0)))
@@ -148,10 +148,10 @@ bool match_success(const std::vector<std::string>& map,
                    const Direction                 direction) {
     using std::size;
 
-    auto [x, y]                            = position;
-    const auto& [x_direction, y_direction] = direction;
+    auto [x, y]                           = position;
+    const auto [x_direction, y_direction] = direction;
 
-    for (const char& character : to_search)
+    for (const char character : to_search)
     {
         if (x < 0 || y < 0 || x >= size(map) || y >= size(map.at(0)))
             return false;
