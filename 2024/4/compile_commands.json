@@ -1,0 +1,19 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=c++17",
+      "-I",
+      "/Users/shawn/.local/include",
+      "-I",
+      "/Users/shawn/.local/include",
+      "-o",
+      "run",
+      "solution.cpp"
+    ],
+    "directory": "/Users/shawn/Documents/development/advent-of-code/2024/2",
+    "file": "/Users/shawn/Documents/development/advent-of-code/2024/2/solution.cpp",
+    "output": "/Users/shawn/Documents/development/advent-of-code/2024/2/run"
+  }
+]
