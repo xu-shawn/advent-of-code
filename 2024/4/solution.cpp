@@ -9,17 +9,18 @@
 
 struct Data;
 struct Position;
+struct Direction;
 
 Data parse_from(std::fstream&&);
 void solve(Data&&);
 void solve_q1(const Data&);
 void solve_q2(const Data&);
-int  search_all_matches(const Data&, const std::string&, const std::pair<int, int>);
-bool cross_xmas_match(const Data&, const std::pair<int, int>);
+int  search_all_matches(const Data&, const std::string&, const Position);
+bool cross_xmas_match(const Data&, const Position);
 bool match_success(const std::vector<std::string>&,
                    const std::string&,
-                   const std::pair<int, int>,
-                   const std::pair<int, int>);
+                   const Position,
+                   const Direction);
 
 constexpr Position operator+(const Position& lhs, const std::pair<int, int> direction) noexcept;
 Position&          operator+=(Position& lhs, const std::pair<int, int> direction) noexcept;
