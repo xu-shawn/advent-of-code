@@ -15,9 +15,9 @@ Data             parse_from(std::fstream&&);
 void             solve(Data&&);
 void             solve_q1(const Data&);
 void             solve_q2(const Data&);
-bool             invalid_order(const std::vector<int>::const_iterator&,
-                               const std::vector<int>::const_iterator&,
-                               const std::unordered_map<int, std::vector<int>>&);
+bool             valid_order(const std::vector<int>::const_iterator&,
+                             const std::vector<int>::const_iterator&,
+                             const std::unordered_map<int, std::vector<int>>&);
 std::vector<int> valid_reordering(const std::vector<int>::const_iterator&,
                                   const std::vector<int>::const_iterator&,
                                   const std::unordered_map<int, std::vector<int>>&);
@@ -87,7 +87,7 @@ void solve_q1(const Data& data) {
 
         for (auto it = cbegin(query); it != cend(query); ++it)
         {
-            if (invalid_order(it, cend(query), data.dependency))
+            if (!valid_order(it, cend(query), data.dependency))
             {
                 success = false;
                 break;
@@ -112,7 +112,7 @@ void solve_q2(const Data& data) {
     {
         for (auto it = cbegin(query); it != cend(query); ++it)
         {
-            if (invalid_order(it, cend(query), data.dependency))
+            if (!valid_order(it, cend(query), data.dependency))
             {
                 ans +=
                   valid_reordering(cbegin(query), cend(query), data.dependency).at(size(query) / 2);
@@ -124,20 +124,18 @@ void solve_q2(const Data& data) {
     std::cout << ans << std::endl;
 }
 
-bool invalid_order(const std::vector<int>::const_iterator&          curr,
-                   const std::vector<int>::const_iterator&          end,
-                   const std::unordered_map<int, std::vector<int>>& dependency) {
+bool valid_order(const std::vector<int>::const_iterator&          curr,
+                 const std::vector<int>::const_iterator&          end,
+                 const std::unordered_map<int, std::vector<int>>& dependency) {
 
     if (dependency.find(*curr) == dependency.end())
-        return false;
+        return true;
 
     for (const auto dependency_item : dependency.at(*curr))
-    {
         if (std::find(curr, end, dependency_item) != end)
-            return true;
-    }
+            return false;
 
-    return false;
+    return true;
 }
 
 std::vector<int> valid_reordering(const std::vector<int>::const_iterator&          begin,
