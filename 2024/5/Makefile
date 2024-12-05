@@ -1,2 +1,2 @@
 all:
-	g++ -std=c++17 solution.cpp -o run
+	g++ -std=c++17 -O3 solution.cpp -o run
