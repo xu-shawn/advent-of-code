@@ -132,13 +132,14 @@ bool elem_in_valid_order(const std::vector<int>::const_iterator           curr,
 std::vector<int> valid_reordering(const std::vector<int>::const_iterator           begin,
                                   const std::vector<int>::const_iterator           end,
                                   const std::unordered_map<int, std::vector<int>>& dependencies) {
+    using std::empty;
     using std::cbegin;
     using std::cend;
 
     std::unordered_set<int> to_process{begin, end};
     std::vector<int>        new_query;
 
-    while (!to_process.empty())
+    while (!empty(to_process))
     {
         for (const auto ele : to_process)
         {
