@@ -15,14 +15,14 @@ Data             parse_from(std::fstream&&);
 void             solve(Data&&);
 void             solve_q1(const Data&);
 void             solve_q2(const Data&);
-bool             valid_order(const std::vector<int>::const_iterator&,
-                             const std::vector<int>::const_iterator&,
+bool             valid_order(const std::vector<int>::const_iterator,
+                             const std::vector<int>::const_iterator,
                              const std::unordered_map<int, std::vector<int>>&);
-bool             valid_order_elem(const std::vector<int>::const_iterator&,
-                                  const std::vector<int>::const_iterator&,
+bool             valid_order_elem(const std::vector<int>::const_iterator,
+                                  const std::vector<int>::const_iterator,
                                   const std::unordered_map<int, std::vector<int>>&);
-std::vector<int> valid_reordering(const std::vector<int>::const_iterator&,
-                                  const std::vector<int>::const_iterator&,
+std::vector<int> valid_reordering(const std::vector<int>::const_iterator,
+                                  const std::vector<int>::const_iterator,
                                   const std::unordered_map<int, std::vector<int>>&);
 
 struct Data {
@@ -106,8 +106,8 @@ void solve_q2(const Data& data) {
     std::cout << ans << std::endl;
 }
 
-bool valid_order(const std::vector<int>::const_iterator&          it_begin,
-                 const std::vector<int>::const_iterator&          it_end,
+bool valid_order(const std::vector<int>::const_iterator           it_begin,
+                 const std::vector<int>::const_iterator           it_end,
                  const std::unordered_map<int, std::vector<int>>& dependency) {
     for (auto it = it_begin; it != it_end; ++it)
         if (!valid_order_elem(it, it_end, dependency))
@@ -116,8 +116,8 @@ bool valid_order(const std::vector<int>::const_iterator&          it_begin,
     return true;
 }
 
-bool valid_order_elem(const std::vector<int>::const_iterator&          curr,
-                      const std::vector<int>::const_iterator&          end,
+bool valid_order_elem(const std::vector<int>::const_iterator           curr,
+                      const std::vector<int>::const_iterator           end,
                       const std::unordered_map<int, std::vector<int>>& dependency) {
     if (dependency.find(*curr) == dependency.end())
         return true;
@@ -129,8 +129,8 @@ bool valid_order_elem(const std::vector<int>::const_iterator&          curr,
     return true;
 }
 
-std::vector<int> valid_reordering(const std::vector<int>::const_iterator&          begin,
-                                  const std::vector<int>::const_iterator&          end,
+std::vector<int> valid_reordering(const std::vector<int>::const_iterator           begin,
+                                  const std::vector<int>::const_iterator           end,
                                   const std::unordered_map<int, std::vector<int>>& dependencies) {
     std::unordered_set<int> to_process{begin, end};
     std::vector<int>        new_query;
