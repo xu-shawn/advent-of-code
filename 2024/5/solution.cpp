@@ -1,4 +1,5 @@
-#include <array>
+#include <algorithm>
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -15,13 +16,13 @@ void             solve(Data&&);
 void             solve_q1(const Data&);
 void             solve_q2(const Data&);
 bool             invalid_order(const std::vector<int>::const_iterator&,
-                               const std::unordered_map<int, std::vector<int>>&,
-                               const std::vector<int>&);
-std::vector<int> valid_reordering(const std::unordered_map<int, std::vector<int>>&,
-                                  const std::vector<int>&);
+                               const std::vector<int>::const_iterator&,
+                               const std::unordered_map<int, std::vector<int>>&);
+std::vector<int> valid_reordering(const std::vector<int>::const_iterator&,
+                                  const std::vector<int>::const_iterator&,
+                                  const std::unordered_map<int, std::vector<int>>&);
 
 struct Data {
-
     std::unordered_map<int, std::vector<int>> dependency;
     std::vector<std::vector<int>>             queries;
 
@@ -49,7 +50,7 @@ Data parse_from(std::fstream&& file) {
         else if (line.find(',') != std::string::npos)
         {
             std::vector<int> this_query;
-            size_t           pos;
+            std::size_t      pos;
             std::string      token;
 
             while ((pos = line.find(',')) != std::string::npos)
@@ -76,7 +77,7 @@ void solve(Data&& data) {
 void solve_q1(const Data& data) {
     using std::size;
     using std::cbegin;
-    using std::end;
+    using std::cend;
 
     int ans = 0;
 
@@ -86,7 +87,7 @@ void solve_q1(const Data& data) {
 
         for (auto it = cbegin(query); it != cend(query); ++it)
         {
-            if (invalid_order(it, data.dependency, query))
+            if (invalid_order(it, cend(query), data.dependency))
             {
                 success = false;
                 break;
@@ -103,53 +104,50 @@ void solve_q1(const Data& data) {
 void solve_q2(const Data& data) {
     using std::size;
     using std::cbegin;
-    using std::end;
+    using std::cend;
 
     int ans = 0;
 
     for (const auto& query : data.queries)
     {
-        bool success = true;
-
         for (auto it = cbegin(query); it != cend(query); ++it)
         {
-            if (invalid_order(it, data.dependency, query))
+            if (invalid_order(it, cend(query), data.dependency))
             {
-                success = false;
+                ans +=
+                  valid_reordering(cbegin(query), cend(query), data.dependency).at(size(query) / 2);
                 break;
             }
         }
-
-        if (!success)
-            ans += valid_reordering(data.dependency, query).at(size(query) / 2);
     }
 
     std::cout << ans << std::endl;
 }
 
-bool invalid_order(const std::vector<int>::const_iterator&          it,
-                   const std::unordered_map<int, std::vector<int>>& dependency,
-                   const std::vector<int>&                          query) {
+bool invalid_order(const std::vector<int>::const_iterator&          curr,
+                   const std::vector<int>::const_iterator&          end,
+                   const std::unordered_map<int, std::vector<int>>& dependency) {
 
-    if (dependency.find(*it) == dependency.end())
+    if (dependency.find(*curr) == dependency.end())
         return false;
 
-    for (const auto dependency_item : dependency.at(*it))
+    for (const auto dependency_item : dependency.at(*curr))
     {
-        if (std::find(it, cend(query), dependency_item) != cend(query))
+        if (std::find(curr, end, dependency_item) != end)
             return true;
     }
 
     return false;
 }
 
-std::vector<int> valid_reordering(const std::unordered_map<int, std::vector<int>>& dependencies,
-                                  const std::vector<int>&                          query) {
+std::vector<int> valid_reordering(const std::vector<int>::const_iterator&          begin,
+                                  const std::vector<int>::const_iterator&          end,
+                                  const std::unordered_map<int, std::vector<int>>& dependencies) {
     std::unordered_set<int> to_process;
     std::vector<int>        new_query;
 
-    for (const auto ele : query)
-        to_process.insert(ele);
+    for (auto i = begin; i != end; i++)
+        to_process.insert(*i);
 
     while (!to_process.empty())
     {
