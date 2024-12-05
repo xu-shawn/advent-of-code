@@ -132,6 +132,9 @@ bool valid_order_elem(const std::vector<int>::const_iterator           curr,
 std::vector<int> valid_reordering(const std::vector<int>::const_iterator           begin,
                                   const std::vector<int>::const_iterator           end,
                                   const std::unordered_map<int, std::vector<int>>& dependencies) {
+    using std::cbegin;
+    using std::cend;
+
     std::unordered_set<int> to_process{begin, end};
     std::vector<int>        new_query;
 
@@ -139,25 +142,12 @@ std::vector<int> valid_reordering(const std::vector<int>::const_iterator        
     {
         for (const auto ele : to_process)
         {
-            if (dependencies.find(ele) == dependencies.end())
-            {
-                new_query.push_back(ele);
-                to_process.erase(ele);
-                break;
-            }
+            auto dependency = dependencies.find(ele);
 
-            bool can_add = true;
-
-            for (const auto dependency : dependencies.at(ele))
-            {
-                if (to_process.find(dependency) != to_process.end())
-                {
-                    can_add = false;
-                    break;
-                }
-            }
-
-            if (can_add)
+            if (dependency == dependencies.end()
+                || std::all_of(
+                  cbegin(dependency->second), cend(dependency->second),
+                  [&to_process](int value) { return to_process.find(value) == cend(to_process); }))
             {
                 new_query.push_back(ele);
                 to_process.erase(ele);
