@@ -12,8 +12,6 @@ struct Data;
 struct Direction;
 struct Position;
 struct PositionHasher;
-struct DirectedPositon;
-struct DirectedPositonHasher;
 
 Data parse_from(std::fstream&&);
 void solve(Data&&);
