@@ -17,10 +17,10 @@ struct PositionHasher;
 Data parse_from(std::fstream&&);
 void solve(Data&&);
 void solve_q1(const Data&);
-void solve_q2(Data&);
+void solve_q2(const Data&);
 std::unordered_set<Position, PositionHasher>
      simulate_walk(const std::vector<std::vector<char>>& map, Position curr_position);
-bool will_halt(const std::vector<std::vector<char>>&, Position);
+bool will_halt(const std::vector<std::vector<char>>&, Position, const Position);
 
 constexpr Position  operator+(const Position, const Direction) noexcept;
 constexpr Position& operator+=(Position&, const Direction) noexcept;
@@ -156,8 +156,6 @@ Data parse_from(std::fstream&& file) {
         }
     }
 
-    std::cout << result.start_position.x << " " << result.start_position.y << std::endl;
-
     return result;
 }
 
@@ -171,7 +169,7 @@ void solve_q1(const Data& data) {
     std::cout << size(simulate_walk(data.map, data.start_position)) << std::endl;
 }
 
-void solve_q2(Data& data) {
+void solve_q2(const Data& data) {
     using std::size;
 
     int ans = 0;
@@ -179,14 +177,10 @@ void solve_q2(Data& data) {
     auto relevant_positions = simulate_walk(data.map, data.start_position);
     relevant_positions.erase(data.start_position);
 
-    for (const auto [i, j] : relevant_positions)
+    for (const auto blocker : relevant_positions)
     {
-        data.map[i][j] = '#';
-
-        if (!will_halt(data.map, data.start_position))
+        if (!will_halt(data.map, data.start_position, blocker))
             ans++;
-
-        data.map[i][j] = '.';
     }
 
     std::cout << ans << std::endl;
@@ -220,7 +214,9 @@ simulate_walk(const std::vector<std::vector<char>>& map, Position curr_position)
     }
 }
 
-bool will_halt(const std::vector<std::vector<char>>& map, Position curr_position) {
+bool will_halt(const std::vector<std::vector<char>>& map,
+               Position                              curr_position,
+               const Position                        blocker) {
     using std::size;
 
     Direction                                                    curr_direction = N;
@@ -241,7 +237,7 @@ bool will_halt(const std::vector<std::vector<char>>& map, Position curr_position
             || next_position.y >= size(map[next_position.x]))
             return true;
 
-        if (map[next_position.x][next_position.y] == '#')
+        if (map[next_position.x][next_position.y] == '#' || next_position == blocker)
         {
             curr_direction = clockwise(curr_direction);
             continue;
