@@ -1,18 +1,19 @@
+#include <array>
 #include <algorithm>
 #include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <string>
-#include <unordered_map>
 #include <unordered_set>
-#include <utility>
 #include <vector>
 
 struct Data;
 struct Direction;
 struct Position;
 struct PositionHasher;
+struct DirectedPositon;
+struct DirectedPositonHasher;
 
 Data parse_from(std::fstream&&);
 void solve(Data&&);
