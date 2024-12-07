@@ -22,8 +22,7 @@ template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(const T&, const T&, const Iterator, const Iterator, Ops...);
 constexpr std::uint8_t num_digits(std::uint64_t num);
 template<typename T>
-constexpr T            power(const T base, const std::int8_t exponent);
-constexpr std::uint8_t num_digits(std::uint64_t num);
+constexpr T power(const T base, const std::int8_t exponent);
 template<std::size_t... Is>
 constexpr std::array<std::uint64_t, sizeof...(Is)> generate_power_array(std::index_sequence<Is...>);
 
