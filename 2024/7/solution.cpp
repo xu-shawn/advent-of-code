@@ -17,14 +17,15 @@ void solve(Data&&);
 void solve_q1(const Data&);
 void solve_q2(const Data&);
 template<typename Iterator, typename T, typename... Ops>
-bool is_possible(const T&, Iterator, Iterator, Ops...);
+bool is_possible(const T, Iterator, Iterator, Ops...);
 template<typename Iterator, typename T, typename... Ops>
-bool search_for_possible(const T&, const T&, const Iterator, const Iterator, Ops...);
+bool search_for_possible(const T, const T, const Iterator, const Iterator, Ops...);
 constexpr std::uint8_t num_digits(std::uint64_t num);
 template<typename T>
 constexpr T power(const T base, const std::int8_t exponent);
 template<std::size_t... Is>
-constexpr std::array<std::uint64_t, sizeof...(Is)> generate_power_array(std::index_sequence<Is...>);
+constexpr std::array<std::uint64_t, sizeof...(Is)> generate_power_array(std::uint64_t,
+                                                                        std::index_sequence<Is...>);
 
 template<typename T>
 constexpr T power(const T base, const std::int8_t exponent) {
@@ -79,13 +80,13 @@ struct Data {
 Data parse_from(std::fstream&& file) {
     using std::size;
 
-    Data        result;
-    std::string line;
+    Data                       result;
+    std::string                line;
+    std::vector<std::uint64_t> resources;
 
     while (std::getline(file, line))
     {
-        std::vector<std::uint64_t> resources;
-        std::size_t                pos = 0;
+        std::size_t pos = 0;
 
         const std::uint64_t target = std::stoull(line, &pos);
         std::uint64_t       temp   = 0;
@@ -108,6 +109,8 @@ Data parse_from(std::fstream&& file) {
         resources.push_back(temp);
 
         result.data.emplace_back(target, std::move(resources));
+
+        resources.clear();
     }
 
     return result;
@@ -140,9 +143,8 @@ void solve_q2(const Data& data) {
     std::int64_t ans = 0;
     for (const auto& row : data.data)
     {
-        if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second),
-                        std::multiplies<std::uint64_t>{}, Concatenate{},
-                        std::plus<std::uint64_t>()))
+        if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second), Concatenate{},
+                        std::multiplies<std::uint64_t>{}, std::plus<std::uint64_t>()))
             ans += row.first;
     }
 
@@ -151,16 +153,12 @@ void solve_q2(const Data& data) {
 
 template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(
-  const T& target, const T& cur, const Iterator next_element, const Iterator end, Ops... ops) {
+  const T target, const T cur, const Iterator next_element, const Iterator end, Ops... ops) {
     if (next_element == end)
-    {
         return target == cur;
-    }
 
     if (cur > target)
-    {
         return false;
-    }
 
     return (
       search_for_possible(target, ops(cur, *next_element), std::next(next_element), end, ops...)
@@ -168,11 +166,9 @@ bool search_for_possible(
 }
 
 template<typename Iterator, typename T, typename... Ops>
-bool is_possible(const T& target, const Iterator begin, const Iterator end, Ops... ops) {
+bool is_possible(const T target, const Iterator begin, const Iterator end, Ops... ops) {
     if (begin == end)
-    {
         return false;
-    }
 
     static_assert(sizeof...(ops) >= 1);
 
