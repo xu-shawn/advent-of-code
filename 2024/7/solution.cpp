@@ -51,13 +51,14 @@ constexpr std::uint8_t num_digits(std::uint64_t num) {
 
 template<std::size_t... Is>
 constexpr std::array<std::uint64_t, sizeof...(Is)>
-generate_power_array(std::index_sequence<Is...>) {
-    return {power<std::uint64_t>(10, Is)...};
+generate_power_array(std::uint64_t base, std::index_sequence<Is...>) {
+    static_assert(std::max({Is...}) <= std::numeric_limits<std::uint8_t>::max());
+    return {power<std::uint64_t>(base, static_cast<std::uint8_t>(Is))...};
 }
 
 constexpr std::array<uint64_t, num_digits(std::numeric_limits<std::uint64_t>::max())>
   TEN_POWER_LOOKUP = generate_power_array(
-    std::make_index_sequence<num_digits(std::numeric_limits<std::uint64_t>::max())>());
+    10, std::make_index_sequence<num_digits(std::numeric_limits<std::uint64_t>::max())>());
 
 struct Concatenate {
     std::uint64_t operator()(const std::uint64_t a, const std::uint64_t b) const {
