@@ -62,13 +62,12 @@ generate_power_array(T base, std::integer_sequence<std::size_t, Is...>) {
 }
 
 template<typename T>
-struct Concatenate {
+struct concatenate {
     static_assert(std::is_integral_v<T>);
 
     static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> TEN_POWER_LOOKUP =
-      generate_power_array(
-        static_cast<T>(10),
-        std::make_integer_sequence<std::size_t, num_digits(std::numeric_limits<T>::max())>());
+      generate_power_array<T>(
+        10, std::make_integer_sequence<std::size_t, num_digits(std::numeric_limits<T>::max())>());
 
     T operator()(const T a, const T b) const { return a * TEN_POWER_LOOKUP[num_digits(b)] + b; }
 };
@@ -150,7 +149,7 @@ void solve_q2(const Data& data) {
     for (const auto& row : data.data)
     {
         if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second),
-                        Concatenate<std::uint64_t>{}, std::multiplies<std::uint64_t>{},
+                        concatenate<std::uint64_t>{}, std::multiplies<std::uint64_t>{},
                         std::plus<std::uint64_t>{}))
             ans += row.first;
     }
