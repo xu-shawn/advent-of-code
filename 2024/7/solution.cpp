@@ -1,3 +1,7 @@
+#include <algorithm>
+#include <array>
+#include <cctype>
+#include <cstddef>
 #include <cstdint>
 #include <fstream>
 #include <functional>
@@ -5,7 +9,6 @@
 #include <iterator>
 #include <limits>
 #include <string>
-#include <sstream>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -20,15 +23,16 @@ template<typename Iterator, typename T, typename... Ops>
 bool is_possible(const T, Iterator, Iterator, Ops...);
 template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(const T, const T, const Iterator, const Iterator, Ops...);
-constexpr std::uint8_t num_digits(std::uint64_t num);
 template<typename T>
-constexpr T power(const T base, const std::int8_t exponent);
-template<std::size_t... Is>
-constexpr std::array<std::uint64_t, sizeof...(Is)> generate_power_array(std::uint64_t,
-                                                                        std::index_sequence<Is...>);
+constexpr T power(const T base, const std::size_t exponent);
+template<typename T>
+constexpr std::size_t num_digits(T num);
+template<typename T, std::size_t... Is>
+constexpr std::array<T, sizeof...(Is)>
+generate_power_array(T base, std::integer_sequence<std::size_t, Is...>);
 
 template<typename T>
-constexpr T power(const T base, const std::int8_t exponent) {
+constexpr T power(const T base, const std::size_t exponent) {
     if (exponent == 0)
         return static_cast<T>(1);
 
@@ -38,8 +42,9 @@ constexpr T power(const T base, const std::int8_t exponent) {
     return power(base, exponent / 2) * power(base, exponent / 2) * power(base, exponent % 2);
 }
 
-constexpr std::uint8_t num_digits(std::uint64_t num) {
-    std::uint8_t counter = 0;
+template<typename T>
+constexpr std::size_t num_digits(T num) {
+    std::size_t counter = 0;
 
     while (num)
     {
@@ -47,24 +52,25 @@ constexpr std::uint8_t num_digits(std::uint64_t num) {
         counter++;
     }
 
-    return std::max<std::uint8_t>(counter, 1);
+    return std::max<std::size_t>(counter, 1);
 }
 
-template<std::size_t... Is>
-constexpr std::array<std::uint64_t, sizeof...(Is)>
-generate_power_array(std::uint64_t base, std::index_sequence<Is...>) {
-    static_assert(std::max({Is...}) <= std::numeric_limits<std::uint8_t>::max());
-    return {power<std::uint64_t>(base, static_cast<std::uint8_t>(Is))...};
+template<typename T, std::size_t... Is>
+constexpr std::array<T, sizeof...(Is)>
+generate_power_array(T base, std::integer_sequence<std::size_t, Is...>) {
+    return {power(base, Is)...};
 }
 
-constexpr std::array<uint64_t, num_digits(std::numeric_limits<std::uint64_t>::max())>
-  TEN_POWER_LOOKUP = generate_power_array(
-    10, std::make_index_sequence<num_digits(std::numeric_limits<std::uint64_t>::max())>());
-
+template<typename T>
 struct Concatenate {
-    std::uint64_t operator()(const std::uint64_t a, const std::uint64_t b) const {
-        return a * TEN_POWER_LOOKUP[num_digits(b)] + b;
-    }
+    static_assert(std::is_integral_v<T>);
+
+    static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> TEN_POWER_LOOKUP =
+      generate_power_array(
+        static_cast<T>(10),
+        std::make_integer_sequence<std::size_t, num_digits(std::numeric_limits<T>::max())>());
+
+    T operator()(const T a, const T b) const { return a * TEN_POWER_LOOKUP[num_digits(b)] + b; }
 };
 
 struct Data {
@@ -143,8 +149,9 @@ void solve_q2(const Data& data) {
     std::int64_t ans = 0;
     for (const auto& row : data.data)
     {
-        if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second), Concatenate{},
-                        std::multiplies<std::uint64_t>{}, std::plus<std::uint64_t>()))
+        if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second),
+                        Concatenate<std::uint64_t>{}, std::multiplies<std::uint64_t>{},
+                        std::plus<std::uint64_t>{}))
             ans += row.first;
     }
 
