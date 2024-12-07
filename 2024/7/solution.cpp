@@ -29,7 +29,7 @@ template<typename T>
 constexpr std::size_t num_digits(T num);
 template<typename T, std::size_t... Is>
 constexpr std::array<T, sizeof...(Is)>
-generate_power_array(T base, std::integer_sequence<std::size_t, Is...>);
+make_power_sequence(T base, std::integer_sequence<std::size_t, Is...>);
 
 template<typename T>
 constexpr T power(const T base, const std::size_t exponent) {
@@ -57,7 +57,7 @@ constexpr std::size_t num_digits(T num) {
 
 template<typename T, std::size_t... Is>
 constexpr std::array<T, sizeof...(Is)>
-generate_power_array(T base, std::integer_sequence<std::size_t, Is...>) {
+make_power_sequence(T base, std::integer_sequence<std::size_t, Is...>) {
     return {power(base, Is)...};
 }
 
@@ -66,7 +66,7 @@ struct concatenate {
     static_assert(std::is_integral_v<T>);
 
     static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> TEN_POWER_LOOKUP =
-      generate_power_array<T>(
+      make_power_sequence<T>(
         10, std::make_integer_sequence<std::size_t, num_digits(std::numeric_limits<T>::max())>());
 
     T operator()(const T a, const T b) const { return a * TEN_POWER_LOOKUP[num_digits(b)] + b; }
