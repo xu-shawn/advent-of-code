@@ -3,8 +3,10 @@
 #include <functional>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <string>
 #include <sstream>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -18,11 +20,15 @@ template<typename Iterator, typename T, typename... Ops>
 bool is_possible(const T&, Iterator, Iterator, Ops...);
 template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(const T&, const T&, const Iterator, const Iterator, Ops...);
+constexpr std::uint8_t num_digits(std::uint64_t num);
 template<typename T>
-constexpr T power(const T base, const std::int32_t exponent);
+constexpr T            power(const T base, const std::int8_t exponent);
+constexpr std::uint8_t num_digits(std::uint64_t num);
+template<std::size_t... Is>
+constexpr std::array<std::uint64_t, sizeof...(Is)> generate_power_array(std::index_sequence<Is...>);
 
 template<typename T>
-constexpr T power(const T base, const std::int32_t exponent) {
+constexpr T power(const T base, const std::int8_t exponent) {
     if (exponent == 0)
         return static_cast<T>(1);
 
@@ -32,18 +38,31 @@ constexpr T power(const T base, const std::int32_t exponent) {
     return power(base, exponent / 2) * power(base, exponent / 2) * power(base, exponent % 2);
 }
 
+constexpr std::uint8_t num_digits(std::uint64_t num) {
+    std::uint8_t counter = 0;
+
+    while (num)
+    {
+        num /= 10;
+        counter++;
+    }
+
+    return std::max<std::uint8_t>(counter, 1);
+}
+
+template<std::size_t... Is>
+constexpr std::array<std::uint64_t, sizeof...(Is)>
+generate_power_array(std::index_sequence<Is...>) {
+    return {power<std::uint64_t>(10, Is)...};
+}
+
+constexpr std::array<uint64_t, num_digits(std::numeric_limits<std::uint64_t>::max())>
+  TEN_POWER_LOOKUP = generate_power_array(
+    std::make_index_sequence<num_digits(std::numeric_limits<std::uint64_t>::max())>());
+
 struct Concatenate {
     std::uint64_t operator()(const std::uint64_t a, const std::uint64_t b) const {
-        std::uint64_t b_cpy = b;
-        int           b_len = 0;
-
-        while (b_cpy)
-        {
-            b_cpy /= 10;
-            b_len++;
-        }
-
-        return a * power(10, b_len) + b;
+        return a * TEN_POWER_LOOKUP[num_digits(b)] + b;
     }
 };
 
@@ -58,7 +77,7 @@ struct Data {
 };
 
 Data parse_from(std::fstream&& file) {
-    using std::string;
+    using std::size;
 
     Data        result;
     std::string line;
