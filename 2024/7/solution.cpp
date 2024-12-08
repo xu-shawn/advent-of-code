@@ -30,7 +30,7 @@ struct concatenate {
 
     T operator()(const T a, const T b) const {
         T shift = 1;
-        while (shift < a)
+        while (shift < b)
             shift *= 10;
         return a * shift + b;
     }
