@@ -34,10 +34,6 @@ void insert_antinodes(std::unordered_set<Position, PositionHasher>&,
 struct Direction {
     int x;
     int y;
-
-    constexpr Direction(const int a, const int b) :
-        x(a),
-        y(b) {}
 };
 
 
