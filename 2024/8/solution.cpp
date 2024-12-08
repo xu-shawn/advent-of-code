@@ -36,7 +36,6 @@ struct Direction {
     int y;
 };
 
-
 struct Position {
     int x;
     int y;
@@ -157,7 +156,6 @@ void ColinearAntinodeGenerator::insert_antinodes(
         tmp -= dir;
     }
 }
-
 
 Data parse_from(std::fstream&& file) {
     using std::size;
