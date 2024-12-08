@@ -23,53 +23,17 @@ template<typename Iterator, typename T, typename... Ops>
 bool is_possible(const T, Iterator, Iterator, Ops...);
 template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(const T, const T, const Iterator, const Iterator, Ops...);
-template<typename T>
-constexpr T power(const T base, const std::size_t exponent);
-template<typename T>
-constexpr std::size_t num_digits(T num);
-template<typename T, std::size_t... Is>
-constexpr std::array<T, sizeof...(Is)>
-make_power_sequence(T base, std::integer_sequence<std::size_t, Is...>);
-
-template<typename T>
-constexpr T power(const T base, const std::size_t exponent) {
-    if (exponent == 0)
-        return static_cast<T>(1);
-
-    if (exponent == 1)
-        return base;
-
-    return power(base, exponent / 2) * power(base, exponent / 2) * power(base, exponent % 2);
-}
-
-template<typename T>
-constexpr std::size_t num_digits(T num) {
-    std::size_t counter = 0;
-
-    while (num)
-    {
-        num /= 10;
-        counter++;
-    }
-
-    return std::max<std::size_t>(counter, 1);
-}
-
-template<typename T, std::size_t... Is>
-constexpr std::array<T, sizeof...(Is)>
-make_power_sequence(T base, std::integer_sequence<std::size_t, Is...>) {
-    return {power(base, Is)...};
-}
 
 template<typename T>
 struct concatenate {
     static_assert(std::is_integral_v<T>);
 
-    static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> TEN_POWER_LOOKUP =
-      make_power_sequence<T>(
-        10, std::make_integer_sequence<std::size_t, num_digits(std::numeric_limits<T>::max())>());
-
-    T operator()(const T a, const T b) const { return a * TEN_POWER_LOOKUP[num_digits(b)] + b; }
+    T operator()(const T a, const T b) const {
+        T shift = 1;
+        while (shift < a)
+            shift *= 10;
+        return a * shift + b;
+    }
 };
 
 struct Data {
