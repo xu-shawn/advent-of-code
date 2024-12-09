@@ -74,7 +74,7 @@ struct Extended {
 };
 
 template<typename T>
-struct plus {
+struct extended_plus {
     static_assert(std::is_integral_v<T>);
 
     T operator()(const T a, const T b) const noexcept { return a + b; }
@@ -83,7 +83,7 @@ struct plus {
 
 
 template<typename T>
-struct multiplies {
+struct extended_multiplies {
     static_assert(std::is_integral_v<T>);
 
     T operator()(const T a, const T b) const noexcept { return a * b; }
@@ -92,7 +92,7 @@ struct multiplies {
 
 
 template<typename T>
-struct concatenate {
+struct extended_concatenate {
     static_assert(std::is_integral_v<T>);
 
     static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> TEN_POWER_LOOKUP =
@@ -171,7 +171,7 @@ void solve_q1(const Data& data) {
     for (const auto& row : data.data)
     {
         if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second),
-                        multiplies<std::uint64_t>{}, plus<std::uint64_t>{}))
+                        extended_multiplies<std::uint64_t>{}, extended_plus<std::uint64_t>{}))
             ans += row.first;
     }
 
@@ -186,8 +186,8 @@ void solve_q2(const Data& data) {
     for (const auto& row : data.data)
     {
         if (is_possible(row.first, std::cbegin(row.second), std::cend(row.second),
-                        concatenate<std::uint64_t>{}, multiplies<std::uint64_t>{},
-                        plus<std::uint64_t>{}))
+                        extended_concatenate<std::uint64_t>{}, extended_multiplies<std::uint64_t>{},
+                        extended_plus<std::uint64_t>{}))
             ans += row.first;
     }
 
