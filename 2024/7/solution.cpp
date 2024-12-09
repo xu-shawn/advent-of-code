@@ -193,11 +193,11 @@ void solve_q2(const Data& data) {
 template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(
   const T target, const T cur, const Iterator next_element, const Iterator end, Ops... ops) {
-    if (next_element == end)
-        return target == cur;
-
     if (cur > target)
         return false;
+
+    if (next_element == end)
+        return target == cur;
 
     return (
       search_for_possible(target, ops(cur, *next_element), std::next(next_element), end, ops...)
