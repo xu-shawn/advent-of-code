@@ -66,7 +66,7 @@ struct Extended {
     T           value;
     std::size_t num_digits;
 
-    Extended<T>(const T v, const std::size_t nd) :
+    Extended(const T v, const std::size_t nd) :
         value(v),
         num_digits(nd) {}
 
