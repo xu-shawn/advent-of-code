@@ -95,15 +95,13 @@ template<typename T>
 struct extended_concatenate {
     static_assert(std::is_integral_v<T>);
 
-    static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> TEN_POWER_LOOKUP =
+    static constexpr std::array<T, num_digits(std::numeric_limits<T>::max())> LOOKUP =
       make_power_sequence<T>(
         10, std::make_integer_sequence<std::size_t, num_digits(std::numeric_limits<T>::max())>());
 
-    T operator()(const T a, const T b) const noexcept {
-        return a * TEN_POWER_LOOKUP[num_digits(b)] + b;
-    }
+    T operator()(const T a, const T b) const noexcept { return a * LOOKUP[num_digits(b)] + b; }
     T operator()(const T a, const Extended<T> b) const noexcept {
-        return a * TEN_POWER_LOOKUP[b.num_digits] + static_cast<T>(b);
+        return a * LOOKUP[b.num_digits] + static_cast<T>(b);
     }
 };
 
@@ -149,9 +147,7 @@ Data parse_from(std::fstream&& file) {
         }
 
         resources.emplace_back(temp, len);
-
         result.data.emplace_back(target, std::move(resources));
-
         resources.clear();
     }
 
