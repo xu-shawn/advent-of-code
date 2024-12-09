@@ -163,13 +163,11 @@ void solve_q1(const Data& data) {
     using std::cbegin;
     using std::cend;
 
-    std::int64_t ans = 0;
+    std::uint64_t ans = 0;
     for (const auto& row : data.data)
-    {
         if (is_possible(row.first, cbegin(row.second), cend(row.second),
                         extended_multiplies<std::uint64_t>{}, extended_plus<std::uint64_t>{}))
             ans += row.first;
-    }
 
     std::cout << ans << std::endl;
 }
@@ -178,14 +176,12 @@ void solve_q2(const Data& data) {
     using std::cbegin;
     using std::cend;
 
-    std::int64_t ans = 0;
+    std::uint64_t ans = 0;
     for (const auto& row : data.data)
-    {
         if (is_possible(row.first, cbegin(row.second), cend(row.second),
                         extended_concatenate<std::uint64_t>{}, extended_multiplies<std::uint64_t>{},
                         extended_plus<std::uint64_t>{}))
             ans += row.first;
-    }
 
     std::cout << ans << std::endl;
 }
