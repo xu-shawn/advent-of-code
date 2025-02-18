@@ -18,14 +18,19 @@ Data parse_from(std::fstream&&);
 void solve(Data&&);
 void solve_q1(const Data&);
 void solve_q2(const Data&);
+
 template<typename Iterator, typename T, typename... Ops>
 bool is_possible(const T, Iterator, Iterator, Ops...);
+
 template<typename Iterator, typename T, typename... Ops>
 bool search_for_possible(const T, const T, const Iterator, const Iterator, Ops...);
+
 template<typename T>
 constexpr T power(const T base, const std::size_t exponent);
+
 template<typename T>
 constexpr std::size_t num_digits(T num);
+
 template<typename T, std::size_t... Is>
 constexpr std::array<T, sizeof...(Is)>
 make_power_sequence(T base, std::integer_sequence<std::size_t, Is...>);
